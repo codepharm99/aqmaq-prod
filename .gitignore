@@ -1,0 +1,23 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Env
+.env
+
+# Data (оставляем структуру, но без файлов)
+aqmaq-data/**
+!aqmaq-data/**/.gitkeep
+
+# Точные исключения (если вдруг появятся)
+aqmaq-data/db/incidents.jsonl
+aqmaq-data/logs/
+aqmaq-data/tmp/
+aqmaq-data/models/
+aqmaq-data/clips/
+aqmaq-data/video_ring/
+aqmaq-data/thumbs/
+
+# Mac logs
+tools/mac/*.log

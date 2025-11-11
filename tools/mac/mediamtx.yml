@@ -1,0 +1,11 @@
+logLevel: info
+rtsp: yes
+rtspAddress: :8554
+rtspTransports: [tcp]
+rtmp: no
+hls: no
+webrtc: no
+srt: no
+paths:
+  cam:
+    source: publisher
