@@ -23,9 +23,17 @@
 Содержание репозитория
 - `api.py` — FastAPI: `POST /incidents` пишет строки в `aqmaq-data/db/incidents.jsonl`
 - `demo_line.py` — демо-скрипт: читает `SOURCE` (RTSP/локальная камера), рисует линию `LINE_Y`, шлёт события `motion_start`/`motion_end`/`cross_line`, сохраняет кадры в `aqmaq-data/thumbs`
+- `aqmaq/` — типизированное ядро (конфиг, модели, сторадж, сервисы и vision-раннер)
 - `tools/mac/aqcam.sh` — на Mac поднимает MediaMTX и публикует камеру на `rtsp://<IP>:8554/cam`
 - `.env.example` — пример переменных окружения
 - `requirements.txt` — зависимости Python
+
+Архитектурная база
+- `aqmaq/config.py` — строгие настройки (`Settings`) с путями и RTSP-флагами
+- `aqmaq/models.py` — pydantic-модель `Incident` + типы событий
+- `aqmaq/storage.py` — интерфейс стораджа и JSONL-реализация для API
+- `aqmaq/services/events.py` — HTTP-паблишер и writer миниатюр
+- `aqmaq/vision/line_demo.py` — класс `LineDemoRunner` с состоянием и обработкой кадров
 
 Переменные окружения (.env)
 - `SOURCE` — источник видео. Примеры: `0` (локальная камера), `rtsp://<IP>:8554/cam`
