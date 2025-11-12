@@ -83,6 +83,10 @@ API (FastAPI)
 
 Типичный сценарий end-to-end
 - На Mac: `tools/mac/aqcam.sh start` — получите RTSP URL
+- `CAM_INDEX=0 SIZE=1920x1080 FPS=30 aqcam start`
+- `aqcam status`
+- `aqcam stop`
+- `aqcam start`
 - На Ubuntu:
   - Поднимите API: `uvicorn api:app --host 0.0.0.0 --port 8000 --reload`
   - В другом окне: `python demo_line.py --no-gui` (или без флага для окна)
