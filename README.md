@@ -120,3 +120,42 @@ API (FastAPI)
 - При необходимости вынести параметры в `.env`
 - Добавить дополнительные эндпоинты (например, `/stats`)
 - Включить сохранение клипов по событиям и/или интеграцию face‑pipeline на кадрах инцидента
+
+## TL;DR
+- **Данные** храним в `./aqmaq-data` (по умолчанию `AQMAQ_DATA_DIR=./aqmaq-data`).
+- **RTSP всегда по TCP**: `OPENCV_FFMPEG_CAPTURE_OPTIONS="rtsp_transport;tcp"`.
+- **Headless** (сервер, без окна): `.venv` + `opencv-python-headless` → `python demo_line.py --no-gui`.
+- **GUI** (разработчик, с окном): `.venv-gui` + `opencv-python` + активный `$DISPLAY` → `python demo_line.py`.
+
+---
+
+cd ~/aqmaq-prod
+source .venv/bin/activate
+export OPENCV_FFMPEG_CAPTURE_OPTIONS="rtsp_transport;tcp"
+export AQMAQ_DATA_DIR=./aqmaq-data
+python demo_line.py --no-gui
+
+# 1) Активировать GUI venv
+cd ~/aqmaq-prod
+source .venv-gui/bin/activate
+
+# 2) Включить RTSP по TCP (важно: кавычки!)
+export OPENCV_FFMPEG_CAPTURE_OPTIONS="rtsp_transport;tcp"
+
+# (Опционально) указать DATA_DIR, если нужно отличное от дефолта:
+export AQMAQ_DATA_DIR=./aqmaq-data
+
+# 3) Запуск с GUI (скрипт сам возьмёт Source/Line_Y из дефолтов/кода)
+python demo_line.py
+
+cd ~/aqmaq-prod
+source .venv/bin/activate
+export OPENCV_FFMPEG_CAPTURE_OPTIONS="rtsp_transport;tcp"
+export AQMAQ_DATA_DIR=./aqmaq-data
+python demo_line.py --no-gui
+
+cd ~/aqmaq-prod
+source .venv-gui/bin/activate
+export OPENCV_FFMPEG_CAPTURE_OPTIONS="rtsp_transport;tcp"
+export AQMAQ_DATA_DIR=./aqmaq-data
+python demo_line.py
