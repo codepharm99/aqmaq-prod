@@ -27,6 +27,12 @@ class Settings(BaseModel):
         default="rtsp_transport;tcp",
         description="Options forced for OpenCV FFmpeg backend",
     )
+    zone_config_path: Path | None = Field(
+        default=None, description="Optional path to zone configuration JSON"
+    )
+    zone_model_path: Path | None = Field(
+        default=None, description="Optional path to a trained zone interaction model"
+    )
 
     @property
     def thumbs_dir(self) -> Path:
@@ -44,6 +50,10 @@ class Settings(BaseModel):
     def is_rtsp_source(self) -> bool:
         return self.source.startswith(("rtsp://", "rtsps://"))
 
+    @property
+    def faces_dir(self) -> Path:
+        return self.data_dir / "faces"
+
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
@@ -54,6 +64,9 @@ def get_settings() -> Settings:
     data_dir_raw = os.getenv("AQMAQ_DATA_DIR")
     data_dir = Path(data_dir_raw) if data_dir_raw else _DEFAULT_DATA_DIR
 
+    zone_config_env = os.getenv("ZONE_CONFIG_PATH")
+    zone_model_env = os.getenv("ZONE_MODEL_PATH")
+
     return Settings(
         source=os.getenv("SOURCE", "0"),
         line_y=int(os.getenv("LINE_Y", "300")),
@@ -63,4 +76,6 @@ def get_settings() -> Settings:
         opencv_ffmpeg_capture_options=os.getenv(
             "OPENCV_FFMPEG_CAPTURE_OPTIONS", "rtsp_transport;tcp"
         ),
+        zone_config_path=Path(zone_config_env) if zone_config_env else None,
+        zone_model_path=Path(zone_model_env) if zone_model_env else None,
     )

@@ -23,6 +23,7 @@
 Содержание репозитория
 - `api.py` — FastAPI: `POST /incidents` пишет строки в `aqmaq-data/db/incidents.jsonl`
 - `demo_line.py` — демо-скрипт: читает `SOURCE` (RTSP/локальная камера), рисует линию `LINE_Y`, шлёт события `motion_start`/`motion_end`/`cross_line`, сохраняет кадры в `aqmaq-data/thumbs`
+- `demo_zone.py` — демо зоны товара: следит за ROI стеллажа, применяет Keras/TFLite модель взаимодействий и снимает лица после контакта
 - `aqmaq/` — типизированное ядро (конфиг, модели, сторадж, сервисы и vision-раннер)
 - `tools/mac/aqcam.sh` — на Mac поднимает MediaMTX и публикует камеру на `rtsp://<IP>:8554/cam`
 - `.env.example` — пример переменных окружения
@@ -34,6 +35,9 @@
 - `aqmaq/storage.py` — интерфейс стораджа и JSONL-реализация для API
 - `aqmaq/services/events.py` — HTTP-паблишер и writer миниатюр
 - `aqmaq/vision/line_demo.py` — класс `LineDemoRunner` с состоянием и обработкой кадров
+- `aqmaq/vision/zone_runner.py` — `ZoneRunner` для сценария «трогаем товар → ловим лицо»
+- `aqmaq/services/zone_model.py` и `aqmaq/services/face_capture.py` — инференс TFLite/эвристики и сохранение лиц
+- `aqmaq/zones.py` — определение ROI (нормализованные координаты, JSON)
 
 Переменные окружения (.env)
 - `SOURCE` — источник видео. Примеры: `0` (локальная камера), `rtsp://<IP>:8554/cam`
@@ -42,6 +46,8 @@
 - `AQMAQ_DATA_DIR` — корень данных, по умолчанию `./aqmaq-data`
 - `NO_MOTION_SECONDS` — таймаут отсутствия движения до события `motion_end`
 - `OPENCV_FFMPEG_CAPTURE_OPTIONS` — форс `rtsp_transport;tcp` для RTSP (если не задано — демо задаёт автоматически при `rtsp://`)
+- `ZONE_CONFIG_PATH` — путь до JSON с зонами (по умолчанию `zones.example.json`)
+- `ZONE_MODEL_PATH` — путь до обученной модели (например, `.tflite`). Если отсутствует — демо использует эвристику
 
 Команды: Ubuntu (API и демо)
 - Создать и активировать venv, поставить зависимости
@@ -59,6 +65,12 @@
 - Валидация
   - Появляются строки в `aqmaq-data/db/incidents.jsonl`
   - Миниатюры событий `cross_line` в `aqmaq-data/thumbs/*.jpg`
+
+Сценарий зоны
+- Настроить файл зон (пример `zones.example.json`)
+- При необходимости обучить модель (`tools/train_zone_model.py` — TODO) и сохранить `.tflite`
+- Запуск: `python demo_zone.py --zones zones.example.json --model model.tflite --threshold 0.65`
+- События `interaction_start|interaction_end` + `face_capture` пишутся в API, лица сохраняются в `aqmaq-data/faces`
 
 Команды: Mac (публикация камеры и URL RTSP)
 - Переход и запуск
